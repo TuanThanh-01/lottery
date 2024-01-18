@@ -17,13 +17,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
-    private final FileUtils fileWritter;
+    private final FileUtils fileWriter;
     private static final int COLUMN_INDEX_EMPLOYEE_ID = 0;
     private static final int COLUMN_INDEX_EMAIL = 1;
     private static final int COLUMN_INDEX_NAME = 2;
 
     @Override
     public List<Employee> getAllEmployee() throws IOException, InvalidFormatException {
+        List<String> lstEmployeeIDReceivedPrize =  getLstEmployeeIDReceivedPrize();
         List<Employee> lstEmployee = new ArrayList<>();
         ClassPathResource resource = new ClassPathResource("datasample.xlsx");
         InputStream inputStream = new FileInputStream(resource.getFile());
@@ -55,7 +56,10 @@ public class EmployeeService implements IEmployeeService {
                     }
                 }
             }
-            lstEmployee.add(employee);
+
+            if(!lstEmployeeIDReceivedPrize.contains(employee.getEmployeeID())){
+                lstEmployee.add(employee);
+            }
         }
         return lstEmployee;
     }
@@ -66,7 +70,19 @@ public class EmployeeService implements IEmployeeService {
                 + resultRequest.getEmail() + "-"
                 + resultRequest.getName() + " ====>>>> "
                 + resultRequest.getPrize().toUpperCase();
-        fileWritter.writeFile(content, resultRequest.getPrize());
+        fileWriter.writeFile(content, resultRequest.getPrize());
+        fileWriter.writeFile(content, "tổng kết");
+    }
+
+    public List<String> getLstEmployeeIDReceivedPrize() {
+        String content = fileWriter.readFile("result/tổng kết.txt");
+        String [] lstEmployeeData = content.split("\r");
+        List<String> lstEmployeeID = new ArrayList<>();
+        for(String employeeData : lstEmployeeData) {
+            lstEmployeeID.add(employeeData.split("-")[0].replace("\n", ""));
+        }
+        lstEmployeeID.remove(lstEmployeeID.size() - 1);
+        return lstEmployeeID;
     }
 
     private static Object getCellValue(Cell cell) {
