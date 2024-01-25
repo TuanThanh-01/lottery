@@ -3,6 +3,7 @@ package com.qldt.lottery.controller;
 import com.qldt.lottery.data.ResultRequest;
 import com.qldt.lottery.entity.Employee;
 import com.qldt.lottery.service.EmployeeService;
+import com.qldt.lottery.util;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,23 @@ public class EmployeeController {
 
     @GetMapping("/all-employee-data")
     public ResponseEntity<List<Employee>> getAllEmployee() throws IOException, InvalidFormatException {
-        return ResponseEntity.ok(employeeService.getAllEmployee());
+        if(util.AllEmployee==null){
+            util.AllEmployee = employeeService.getAllEmployee();
+        }
+        return ResponseEntity.ok(util.AllEmployee);
+    }
+
+    @GetMapping("/winner-employee-data")
+    public ResponseEntity<Employee> getWinnerEmployee() throws IOException, InvalidFormatException {
+        if(util.AllEmployee.isEmpty()){
+            util.AllEmployee = employeeService.getAllEmployee();
+        }
+        return ResponseEntity.ok(employeeService.getWinner());
     }
 
     @PostMapping("/save-result")
     public ResponseEntity<String> saveResult(@RequestBody ResultRequest resultRequest) {
+        System.out.println("Result: " + resultRequest.toString());
         employeeService.saveResult(resultRequest);
         return ResponseEntity.ok("Save result success!");
     }

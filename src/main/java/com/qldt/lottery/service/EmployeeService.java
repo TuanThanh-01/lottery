@@ -2,6 +2,7 @@ package com.qldt.lottery.service;
 
 import com.qldt.lottery.data.ResultRequest;
 import com.qldt.lottery.entity.Employee;
+import com.qldt.lottery.util;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -13,10 +14,7 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +26,6 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public List<Employee> getAllEmployee() throws IOException, InvalidFormatException {
-        List<String> lstEmployeeIDReceivedPrize = getLstEmployeeIDReceivedPrize();
-        System.out.println(lstEmployeeIDReceivedPrize);
         List<Employee> lstEmployee = new ArrayList<>();
         ClassPathResource resource = new ClassPathResource("datasample.xlsx");
         InputStream inputStream = new FileInputStream(resource.getFile());
@@ -61,16 +57,32 @@ public class EmployeeService implements IEmployeeService {
                     }
                 }
             }
+            lstEmployee.add(employee);
 
-            if(!lstEmployeeIDReceivedPrize.contains(employee.getEmployeeID())){
-                lstEmployee.add(employee);
-            }
         }
         return lstEmployee;
     }
 
     @Override
+    public Employee getWinner() {
+        Random random = new Random();
+
+        int randomIndex = random.nextInt(util.AllEmployee.size());
+
+        System.out.println(randomIndex);
+
+        return util.AllEmployee.get(randomIndex);
+    }
+
+    @Override
     public void saveResult(ResultRequest resultRequest) {
+        String email = resultRequest.getEmail();
+        for(Employee employee : util.AllEmployee){
+            if(employee.getEmail().equals(email)){
+                System.out.println("remove: " + email);
+                util.AllEmployee.remove(employee);
+            }
+        }
         String content = resultRequest.getEmployeeID() + "-"
                 + resultRequest.getEmail() + "-"
                 + resultRequest.getName() + " ====>>>> "
@@ -95,19 +107,23 @@ public class EmployeeService implements IEmployeeService {
         return sb.toString();
     }
 
-    public List<String> getLstEmployeeIDReceivedPrize() {
-        String content = readFile();
-        String [] lstEmployeeData = content.split("[\\r\\n]+");
-        System.out.println(Arrays.toString(lstEmployeeData));
-        List<String> lstEmployeeID = new ArrayList<>();
-        for(String employeeData : lstEmployeeData) {
-            lstEmployeeID.add(employeeData.split("-")[0].replace("\n", ""));
-        }
-        if(lstEmployeeID.get(0).equalsIgnoreCase("")){
-            lstEmployeeID.remove(lstEmployeeID.size() - 1);
-        }
-        return lstEmployeeID;
-    }
+//    public List<String> getLstEmployeeIDReceivedPrize() {
+//        String content = readFile();
+//        String [] lstEmployeeData = content.split("[\\r\\n]+");
+//        System.out.println(Arrays.toString(lstEmployeeData));
+//        List<String> lstEmployeeID = new ArrayList<>();
+//        for(String employeeData : lstEmployeeData) {
+//            lstEmployeeID.add(employeeData.split("-")[0].replace("\n", ""));
+//        }
+//        if(lstEmployeeID.isEmpty()){
+//            return lstEmployeeID;
+//        }
+//
+//        if(lstEmployeeID.get(0).equalsIgnoreCase("")){
+//            lstEmployeeID.remove(lstEmployeeID.size() - 1);
+//        }
+//        return lstEmployeeID;
+//    }
 
     private static Object getCellValue(Cell cell) {
         CellType cellType = cell.getCellTypeEnum();
