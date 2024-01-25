@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IEmployeeService {
 
-    List<Employee> getAllEmployee() throws IOException, InvalidFormatException;
+    void getAllEmployee() throws IOException, InvalidFormatException;
     Employee getWinner();
 
     void saveResult(ResultRequest resultRequest);

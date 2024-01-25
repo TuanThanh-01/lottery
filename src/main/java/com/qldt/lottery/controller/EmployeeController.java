@@ -21,17 +21,18 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping("/all-employee-data")
-    public ResponseEntity<List<Employee>> getAllEmployee() throws IOException, InvalidFormatException {
-        if(util.AllEmployee==null){
-            util.AllEmployee = employeeService.getAllEmployee();
+    public ResponseEntity<Employee> getAllEmployee() throws IOException, InvalidFormatException {
+        if(util.AllEmployee.isEmpty()){
+            employeeService.getAllEmployee();
         }
-        return ResponseEntity.ok(util.AllEmployee);
+        return ResponseEntity.ok(employeeService.getWinner());
     }
 
     @GetMapping("/winner-employee-data")
     public ResponseEntity<Employee> getWinnerEmployee() throws IOException, InvalidFormatException {
         if(util.AllEmployee.isEmpty()){
-            util.AllEmployee = employeeService.getAllEmployee();
+            employeeService.getAllEmployee();
+            System.out.println(util.AllEmployee);
         }
         return ResponseEntity.ok(employeeService.getWinner());
     }

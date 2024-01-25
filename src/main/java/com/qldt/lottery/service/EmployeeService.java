@@ -25,8 +25,7 @@ public class EmployeeService implements IEmployeeService {
     private static final int COLUMN_INDEX_NAME = 2;
 
     @Override
-    public List<Employee> getAllEmployee() throws IOException, InvalidFormatException {
-        List<Employee> lstEmployee = new ArrayList<>();
+    public void getAllEmployee() throws IOException, InvalidFormatException {
         ClassPathResource resource = new ClassPathResource("datasample.xlsx");
         InputStream inputStream = new FileInputStream(resource.getFile());
         Workbook workbook = WorkbookFactory.create(inputStream);
@@ -57,14 +56,16 @@ public class EmployeeService implements IEmployeeService {
                     }
                 }
             }
-            lstEmployee.add(employee);
+            util.AllEmployee.add(employee);
 
         }
-        return lstEmployee;
     }
 
     @Override
     public Employee getWinner() {
+
+        System.out.println("Employee size: " + util.AllEmployee.size());
+
         Random random = new Random();
 
         int randomIndex = random.nextInt(util.AllEmployee.size());
@@ -74,21 +75,32 @@ public class EmployeeService implements IEmployeeService {
         return util.AllEmployee.get(randomIndex);
     }
 
+    public List<Employee> getListWinner(int num){
+        List<Employee> listWinner = new ArrayList<>();
+        for(int i=1;i<=num;i++){
+            listWinner.add(getWinner());
+        }
+        return listWinner;
+    }
+
     @Override
     public void saveResult(ResultRequest resultRequest) {
-        String email = resultRequest.getEmail();
-        for(Employee employee : util.AllEmployee){
-            if(employee.getEmail().equals(email)){
-                System.out.println("remove: " + email);
-                util.AllEmployee.remove(employee);
-            }
-        }
+        String id = resultRequest.getEmployeeID();
+
         String content = resultRequest.getEmployeeID() + "-"
                 + resultRequest.getEmail() + "-"
                 + resultRequest.getName() + " ====>>>> "
                 + resultRequest.getPrize().toUpperCase();
         writeFile(content, resultRequest.getPrize());
         writeFile(content, "tổng kết");
+        for(Employee employee : util.AllEmployee){
+            System.out.println("for: " + employee);
+            if(employee.getEmployeeID().equals(id)){
+                System.out.println("remove: " + id);
+                util.AllEmployee.remove(employee);
+                break;
+            }
+        }
     }
 
     @Override
