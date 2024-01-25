@@ -12,4 +12,6 @@ public interface IEmployeeService {
     List<Employee> getAllEmployee() throws IOException, InvalidFormatException;
 
     void saveResult(ResultRequest resultRequest);
+
+    String saveListResult(List<ResultRequest> lstResultRequest);
 }

@@ -2,29 +2,34 @@ package com.qldt.lottery.service;
 
 import com.qldt.lottery.data.ResultRequest;
 import com.qldt.lottery.entity.Employee;
-import com.qldt.lottery.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
-    private final FileUtils fileWriter;
+    private final ResourceLoader resourceLoader;
     private static final int COLUMN_INDEX_EMPLOYEE_ID = 0;
     private static final int COLUMN_INDEX_EMAIL = 1;
     private static final int COLUMN_INDEX_NAME = 2;
 
     @Override
     public List<Employee> getAllEmployee() throws IOException, InvalidFormatException {
-        List<String> lstEmployeeIDReceivedPrize =  getLstEmployeeIDReceivedPrize();
+        List<String> lstEmployeeIDReceivedPrize = getLstEmployeeIDReceivedPrize();
+        System.out.println(lstEmployeeIDReceivedPrize);
         List<Employee> lstEmployee = new ArrayList<>();
         ClassPathResource resource = new ClassPathResource("datasample.xlsx");
         InputStream inputStream = new FileInputStream(resource.getFile());
@@ -70,18 +75,37 @@ public class EmployeeService implements IEmployeeService {
                 + resultRequest.getEmail() + "-"
                 + resultRequest.getName() + " ====>>>> "
                 + resultRequest.getPrize().toUpperCase();
-        fileWriter.writeFile(content, resultRequest.getPrize());
-        fileWriter.writeFile(content, "tổng kết");
+        writeFile(content, resultRequest.getPrize());
+        writeFile(content, "tổng kết");
+    }
+
+    @Override
+    public String saveListResult(List<ResultRequest> lstResultRequest) {
+        StringBuilder sb = new StringBuilder();
+        lstResultRequest.forEach(resultRequest -> {
+            String content = resultRequest.getEmployeeID() + "-"
+                    + resultRequest.getEmail() + "-"
+                    + resultRequest.getName() + " ====>>>> "
+                    + resultRequest.getPrize().toUpperCase() + "\n";
+            sb.append(content);
+        });
+        sb.deleteCharAt(sb.length() - 1);
+        writeFile(sb.toString(), lstResultRequest.get(0).getPrize());
+        writeFile(sb.toString(), "tổng kết");
+        return sb.toString();
     }
 
     public List<String> getLstEmployeeIDReceivedPrize() {
-        String content = fileWriter.readFile("result/tổng kết.txt");
-        String [] lstEmployeeData = content.split("\r");
+        String content = readFile();
+        String [] lstEmployeeData = content.split("[\\r\\n]+");
+        System.out.println(Arrays.toString(lstEmployeeData));
         List<String> lstEmployeeID = new ArrayList<>();
         for(String employeeData : lstEmployeeData) {
             lstEmployeeID.add(employeeData.split("-")[0].replace("\n", ""));
         }
-        lstEmployeeID.remove(lstEmployeeID.size() - 1);
+        if(lstEmployeeID.get(0).equalsIgnoreCase("")){
+            lstEmployeeID.remove(lstEmployeeID.size() - 1);
+        }
         return lstEmployeeID;
     }
 
@@ -101,5 +125,37 @@ public class EmployeeService implements IEmployeeService {
             }
         }
         return cellValue;
+    }
+
+    private String readFile() {
+        Resource resource = resourceLoader.getResource("classpath:result/tổng kết.txt");
+        try {
+            InputStream inputStream = resource.getInputStream();
+            byte[] fileData = FileCopyUtils.copyToByteArray(inputStream);
+            inputStream.close();
+            return new String(fileData, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            // Xử lý lỗi khi không thể đọc file
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void writeFile(String content, String prize) {
+        try {
+            File file =  new File("src/main/resources/result/" + prize + ".txt");
+            // Tạo file mới nếu file chưa tồn tại
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+            writer.write(content);
+            writer.newLine(); // Thêm dòng mới
+            writer.close();
+        } catch (IOException e) {
+            // Xử lý lỗi khi không thể ghi file
+            e.printStackTrace();
+        }
     }
 }

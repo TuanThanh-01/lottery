@@ -29,4 +29,9 @@ public class EmployeeController {
         employeeService.saveResult(resultRequest);
         return ResponseEntity.ok("Save result success!");
     }
+
+    @PostMapping("/save-list-result")
+    public ResponseEntity<String> saveListResult(@RequestBody List<ResultRequest> resultRequest) {
+        return ResponseEntity.ok(employeeService.saveListResult(resultRequest));
+    }
 }
