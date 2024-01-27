@@ -37,6 +37,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getWinner());
     }
 
+    @GetMapping("/list-winner-employee-data")
+    public ResponseEntity<List<Employee>> getListWinnerEmployee() throws IOException, InvalidFormatException {
+        if(util.AllEmployee.isEmpty()) {
+            employeeService.getAllEmployee();
+            System.out.println(util.AllEmployee);
+        }
+        return ResponseEntity.ok(employeeService.getListWinner(10));
+    }
+
     @PostMapping("/save-result")
     public ResponseEntity<String> saveResult(@RequestBody ResultRequest resultRequest) {
         System.out.println("Result: " + resultRequest.toString());

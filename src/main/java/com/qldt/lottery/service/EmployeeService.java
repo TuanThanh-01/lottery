@@ -75,9 +75,9 @@ public class EmployeeService implements IEmployeeService {
         return util.AllEmployee.get(randomIndex);
     }
 
-    public List<Employee> getListWinner(int num){
+    public List<Employee> getListWinner(int num) {
         List<Employee> listWinner = new ArrayList<>();
-        for(int i=1;i<=num;i++){
+        for (int i = 1; i <= num; i++) {
             listWinner.add(getWinner());
         }
         return listWinner;
@@ -93,9 +93,9 @@ public class EmployeeService implements IEmployeeService {
                 + resultRequest.getPrize().toUpperCase();
         writeFile(content, resultRequest.getPrize());
         writeFile(content, "tổng kết");
-        for(Employee employee : util.AllEmployee){
+        for (Employee employee : util.AllEmployee) {
             System.out.println("for: " + employee);
-            if(employee.getEmployeeID().equals(id)){
+            if (employee.getEmployeeID().equals(id)) {
                 System.out.println("remove: " + id);
                 util.AllEmployee.remove(employee);
                 break;
@@ -171,7 +171,7 @@ public class EmployeeService implements IEmployeeService {
 
     private void writeFile(String content, String prize) {
         try {
-            File file =  new File("src/main/resources/result/" + prize + ".txt");
+            File file = new File("src/main/resources/result/" + prize + ".txt");
             // Tạo file mới nếu file chưa tồn tại
             if (!file.exists()) {
                 file.createNewFile();
