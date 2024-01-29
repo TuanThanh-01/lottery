@@ -35,7 +35,6 @@ public class EmployeeController {
             System.out.println(util.AllEmployee);
         }
         Employee employee = employeeService.getWinner();
-        System.out.println(employee);
         return ResponseEntity.ok(employee);
     }
 

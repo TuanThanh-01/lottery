@@ -87,10 +87,10 @@ public class EmployeeService implements IEmployeeService {
         writeFile(content, resultRequest.getPrize());
         writeFile(content, "tổng kết");
         for (Employee employee : util.AllEmployee) {
-            System.out.println("for: " + employee);
             if (employee.getEmployeeID().equals(id)) {
-                System.out.println("remove: " + id);
+
                 util.AllEmployee.remove(employee);
+                System.out.println("remove: " + id + ". List size: " + util.AllEmployee.size());
                 break;
             }
         }
