@@ -34,7 +34,9 @@ public class EmployeeController {
             employeeService.getAllEmployee();
             System.out.println(util.AllEmployee);
         }
-        return ResponseEntity.ok(employeeService.getWinner());
+        Employee employee = employeeService.getWinner();
+        System.out.println(employee);
+        return ResponseEntity.ok(employee);
     }
 
     @GetMapping("/list-winner-employee-data")
@@ -43,7 +45,7 @@ public class EmployeeController {
             employeeService.getAllEmployee();
             System.out.println(util.AllEmployee);
         }
-        return ResponseEntity.ok(employeeService.getListWinner(10));
+        return ResponseEntity.ok(employeeService.getListWinner(util.DEFAULT_NUM_OF_EMPLOYEES));
     }
 
     @PostMapping("/save-result")

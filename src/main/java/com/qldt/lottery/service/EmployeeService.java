@@ -20,9 +20,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
     private final ResourceLoader resourceLoader;
-    private static final int COLUMN_INDEX_EMPLOYEE_ID = 0;
-    private static final int COLUMN_INDEX_EMAIL = 1;
-    private static final int COLUMN_INDEX_NAME = 2;
 
     @Override
     public void getAllEmployee() throws IOException, InvalidFormatException {
@@ -49,9 +46,10 @@ public class EmployeeService implements IEmployeeService {
                 // Set value for book object
                 int columnIndex = cell.getColumnIndex();
                 switch (columnIndex) {
-                    case COLUMN_INDEX_EMPLOYEE_ID -> employee.setEmployeeID(String.valueOf(getCellValue(cell)));
-                    case COLUMN_INDEX_EMAIL -> employee.setEmail((String) getCellValue(cell));
-                    case COLUMN_INDEX_NAME -> employee.setName((String) getCellValue(cell));
+                    case util.COLUMN_INDEX_EMPLOYEE_ID -> employee.setEmployeeID(String.valueOf(getCellValue(cell)));
+                    case util.COLUMN_INDEX_EMAIL -> employee.setEmail((String) getCellValue(cell));
+                    case util.COLUMN_INDEX_NAME -> employee.setName((String) getCellValue(cell));
+                    case util.COLUMN_UNIT_NAME ->  employee.setUnit((String) getCellValue(cell));
                     default -> {
                     }
                 }
@@ -63,24 +61,19 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public Employee getWinner() {
-
-        System.out.println("Employee size: " + util.AllEmployee.size());
-
         Random random = new Random();
-
         int randomIndex = random.nextInt(util.AllEmployee.size());
-
-        System.out.println(randomIndex);
-
         return util.AllEmployee.get(randomIndex);
     }
 
     public List<Employee> getListWinner(int num) {
-        List<Employee> listWinner = new ArrayList<>();
-        for (int i = 1; i <= num; i++) {
-            listWinner.add(getWinner());
+        Set<Employee> employeeSet = new HashSet<>();
+        while(employeeSet.size()<num){
+            employeeSet.add(getWinner());
         }
-        return listWinner;
+
+        System.out.println("Set: " + employeeSet);
+        return employeeSet.stream().toList();
     }
 
     @Override

@@ -13,4 +13,5 @@ public class Employee {
     private String employeeID;
     private String email;
     private String name;
+    private String unit;
 }
