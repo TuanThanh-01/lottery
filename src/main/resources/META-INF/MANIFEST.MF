@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Main-Class: 
+Class-Path: spring-aop-6.0.15.jar curvesapi-1.04.jar poi-ooxml-3.17.jar 
+ spring-beans-6.0.15.jar jul-to-slf4j-2.0.9.jar spring-jcl-6.0.15.jar sp
+ ring-boot-3.1.7.jar jackson-core-2.15.3.jar spring-boot-autoconfigure-3
+ .1.7.jar jackson-datatype-jdk8-2.15.3.jar spring-boot-starter-json-3.1.
+ 7.jar tomcat-embed-core-10.1.17.jar spring-webmvc-6.0.15.jar micrometer
+ -commons-1.11.7.jar spring-boot-starter-3.1.7.jar tomcat-embed-el-10.1.
+ 17.jar spring-web-6.0.15.jar slf4j-api-2.0.9.jar logback-core-1.4.14.ja
+ r jakarta.annotation-api-2.1.1.jar lombok-1.18.30.jar poi-3.17.jar jack
+ son-datatype-jsr310-2.15.3.jar snakeyaml-1.33.jar jackson-databind-2.15
+ .3.jar spring-boot-starter-logging-3.1.7.jar spring-boot-starter-web-3.
+ 1.7.jar spring-boot-starter-tomcat-3.1.7.jar poi-ooxml-schemas-3.17.jar
+  log4j-to-slf4j-2.20.0.jar tomcat-embed-websocket-10.1.17.jar commons-c
+ odec-1.15.jar commons-collections4-4.1.jar micrometer-observation-1.11.
+ 7.jar log4j-api-2.20.0.jar stax-api-1.0.1.jar xmlbeans-2.6.0.jar logbac
+ k-classic-1.4.14.jar jackson-annotations-2.15.3.jar jackson-module-para
+ meter-names-2.15.3.jar spring-context-6.0.15.jar spring-expression-6.0.
+ 15.jar spring-core-6.0.15.jar
+
